@@ -12,6 +12,7 @@ body{
   margin:0;
   height:100vh;
   overflow:hidden;
+  touch-action: manipulation;
   font-family:'Sacramento',cursive;
   background:linear-gradient(135deg,#ffd6e8,#ff9acb);
 }
@@ -204,6 +205,15 @@ body{
   cursor:pointer;
 }
 .popup .alt{background:#ff6fbf}
+@media (max-width: 600px) {
+  .letter {
+    height: 60vh;          /* scales to screen */
+    max-height: 70vh;
+    padding: 32px;
+    -webkit-overflow-scrolling: touch; /* iOS smooth scroll */
+  }
+}
+
 </style>
 </head>
 
