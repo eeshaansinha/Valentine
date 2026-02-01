@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dear Mine 💗</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  overflow:hidden;
+  font-family:'Sacramento',cursive;
+  background:linear-gradient(135deg,#ffd6e8,#ff9acb);
+}
+
+/* BACKGROUND */
+.bg{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+
+.lyrics-bg{
+  position:fixed;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+}
+
+/* BLOBS */
+.blob{
+  position:absolute;
+  width:380px;
+  height:380px;
+  background:radial-gradient(circle,rgba(255,255,255,.35),transparent 60%);
+  filter:blur(40px);
+  animation:drift 22s ease-in-out infinite;
+}
+.blob.one{top:10%;left:5%}
+.blob.two{bottom:15%;right:8%;animation-duration:30s}
+.blob.three{top:50%;left:60%;animation-duration:34s}
+
+@keyframes drift{
+  0%,100%{transform:translate(0,0)}
+  50%{transform:translate(40px,-30px)}
+}
+
+/* FLOATING LYRICS — WHITE, GLOW, NO OVERLAP */
+.lyric{
+  position:absolute;
+  font-size:2.45rem;                 /* your size */
+  color:rgba(255,255,255,0.88);
+  white-space:nowrap;
+
+  /* visibility */
+  text-shadow:
+    0 0 8px rgba(255,255,255,0.6),
+    0 0 18px rgba(255,182,213,0.7);
+
+  mix-blend-mode:screen;
+  animation:lyricFloat linear infinite;
+}
+
+
+@keyframes lyricFloat{
+  from{opacity:0;transform:translateY(0)}
+  15%{opacity:.8}
+  85%{opacity:.8}
+  to{opacity:0;transform:translateY(-120vh)}
+}
+
+/* STAGE */
+.stage{
+  position:relative;
+  z-index:2;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* ENVELOPE */
+.envelope{
+  width:440px;
+  height:280px;
+  background:#ff7bbd;
+  border-radius:18px;
+  position:relative;
+  cursor:pointer;
+  box-shadow:0 28px 60px rgba(0,0,0,.22);
+  animation:float 5s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-14px)}
+}
+
+/* FLAP */
+.flap{
+  position:absolute;
+  inset:0;
+  background:#ff5fa8;
+  clip-path:polygon(0 0,100% 0,50% 62%);
+  transform-origin:top center;
+  transition:transform 1.3s cubic-bezier(.22,.61,.36,1);
+  border-radius:18px 18px 0 0;
+  z-index:1;
+}
+.envelope.open .flap{transform:rotateX(180deg)}
+
+/* LETTER */
+.letter{
+  position:absolute;
+  left:50%;
+  bottom:14px;
+  width:412px;
+  height:300px;
+  padding:40px;
+  border-radius:16px;
+  background:
+    linear-gradient(180deg,#f7ecd9,#f3e5cf),
+    repeating-linear-gradient(0deg,rgba(120,90,60,.035) 0 1px,transparent 2px 4px),
+    repeating-linear-gradient(90deg,rgba(120,90,60,.03) 0 1px,transparent 3px 6px);
+  box-shadow:inset 0 0 25px rgba(0,0,0,.08),0 12px 22px rgba(0,0,0,.18);
+  opacity:0;
+  transform:translateX(-50%) translateY(0);
+  transform-origin:center bottom;
+  transition:transform 1.4s cubic-bezier(.22,.61,.36,1),opacity .6s;
+  overflow-y:auto;
+  z-index:3;
+}
+.envelope.open .letter{
+  transform:translateX(-50%) translateY(-55px);
+  opacity:1;
+}
+
+.letter p{
+  font-size:2rem;
+  color:#4b2e1f;
+  line-height:1.6;
+  white-space:pre-line;
+}
+
+.signature{
+  margin-top:26px;
+  text-align:right;
+  font-size:1.7rem;
+}
+
+.next-btn{
+  display:none;
+  margin:18px auto 0;
+  padding:12px 28px;
+  border-radius:28px;
+  border:none;
+  background:#ff4fa3;
+  color:#fff;
+  font-size:1.1rem;
+  cursor:pointer;
+}
+
+/* HEARTS */
+.heart{
+  position:fixed;
+  top:-10%;
+  font-size:36px;
+  animation:heartFall linear infinite;
+  pointer-events:none;
+  z-index:1;
+}
+@keyframes heartFall{
+  to{transform:translateY(120vh) rotate(25deg);opacity:0}
+}
+
+/* POPUP */
+.popup-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+}
+.popup{
+  background:#fff0f7;
+  padding:34px;
+  border-radius:22px;
+  text-align:center;
+  font-family:system-ui,sans-serif;
+}
+.popup button{
+  margin:10px;
+  padding:12px 30px;
+  border-radius:30px;
+  border:none;
+  background:#ff4fa3;
+  color:#fff;
+  font-size:1.15rem;
+  cursor:pointer;
+}
+.popup .alt{background:#ff6fbf}
+</style>
+</head>
+
+<body>
+
+<div class="bg">
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+  <div class="blob three"></div>
+</div>
+
+<div class="lyrics-bg" id="lyricsBg"></div>
+
+<div class="stage">
+  <div class="envelope" id="envelope">
+    <div class="flap"></div>
+    <div class="letter">
+      <p>
+Dear mine,
+
+I know babyy i'm a little late but I hope that spot to be your valentine is still open ;)
+
+Baby you are the love of my life…
+you are my little baby lion....billu mau....my baby girl and you will always be ❤️
+
+I love you to the moon and never back!!
+Mwahhhh Mwahhhh!!!!!
+      </p>
+      <div class="signature">– your Idiot ❤️</div>
+      <button class="next-btn" id="nextBtn">Next 💗</button>
+    </div>
+  </div>
+</div>
+
+<div class="popup-bg" id="popupBg">
+  <div class="popup">
+    <h2>So baby lion will you be my valentine 💖</h2>
+    <button id="yesBtn">YES 💕</button>
+    <button class="alt" id="hellYesBtn">HELL YES 🔥💗</button>
+  </div>
+</div>
+
+<script>
+    let lastX = -1000;      // last lyric x-position
+const minGap = 260;    // required horizontal gap for 2.45rem text
+const envelope=document.getElementById("envelope");
+const nextBtn=document.getElementById("nextBtn");
+const popupBg=document.getElementById("popupBg");
+const yesBtn=document.getElementById("yesBtn");
+const hellYesBtn=document.getElementById("hellYesBtn");
+const lyricsBg=document.getElementById("lyricsBg");
+
+const lyrics=[
+"You had me at hello",
+"All I dream of is your eyes",
+"All I long for is your touch",
+"I think they call this love",
+"Baby Lion",
+"Billu",
+"Billu Mau",
+"Princess",
+"Baby Girl",
+"Enna sona kisne banaya",
+"Until i found you",
+"cant help falling in love with you!",
+"Darling, you look perfect tonight",
+"I found a love for me"
+];
+
+let opened=false;
+
+/* 👇 LANE SYSTEM (NO OVERLAP) */
+const lanes = 5;
+const laneInUse = new Array(lanes).fill(false);
+const laneWidth = 130 / lanes;
+let laneIndex = 0;
+
+envelope.addEventListener("click",()=>{
+  if(!opened){
+    opened=true;
+    envelope.classList.add("open");
+    hearts();
+    setTimeout(()=>nextBtn.style.display="block",1800);
+  }
+});
+
+nextBtn.addEventListener("click",e=>{
+  e.stopPropagation();
+  popupBg.style.display="flex";
+});
+
+function hearts(){
+  setInterval(()=>{
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="💗";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=(6+Math.random()*5)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),12000);
+  },600);
+}
+
+/* 👇 OVERLAP-SAFE LYRICS */
+function lyricsFloat(){
+  setInterval(()=>{
+    const s = document.createElement("span");
+    s.className = "lyric";
+    s.textContent = lyrics[Math.floor(Math.random() * lyrics.length)];
+
+    let x;
+    do {
+      x = Math.random() * (window.innerWidth - 320);
+    } while (Math.abs(x - lastX) < minGap);
+
+    lastX = x;
+
+    s.style.left = x + "px";
+    s.style.top = "110vh";
+    s.style.animationDuration = (34 + Math.random() * 26) + "s"; // slower
+
+    lyricsBg.appendChild(s);
+    setTimeout(() => s.remove(), 80000);
+  }, 2300);
+}
+
+
+function celebrate(){
+  popupBg.style.display="none";
+  for(let i=0;i<120;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="💗";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=(3+Math.random()*3)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  }
+}
+
+yesBtn.onclick=e=>{e.stopPropagation();celebrate()};
+hellYesBtn.onclick=e=>{e.stopPropagation();celebrate()};
+
+lyricsFloat();
+</script>
+
+</body>
+</html>
