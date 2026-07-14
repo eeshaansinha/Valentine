@@ -1254,25 +1254,17 @@ I love celebrating you today and every day.</p>
 
     envelope.classList.toggle("open");
 
-    if(opening){
+  if (opening) {
 
-        setTimeout(()=>{
+    envelopeStage.classList.add("letter-open");
+    envelopeHint.textContent = "Tap the envelope to close";
 
-            envelopeStage.classList.add("letter-open");
+} else {
 
-            envelopeHint.textContent="Tap the envelope to close";
+    envelopeStage.classList.remove("letter-open");
+    envelopeHint.textContent = "Tap the envelope to open your birthday letter ❤️";
 
-        },550);
-
-    }else{
-
-        envelopeStage.classList.remove("letter-open");
-
-        envelopeHint.textContent="Tap the envelope to open your birthday letter ❤️";
-
-    }
-
-});
+}
 
   
   /* ---------------------------------------------------------------------
